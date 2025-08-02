@@ -11,13 +11,13 @@
 }
 
 .container > div {
-  //background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 10px;
 }
 
 .header {
 	grid-area: header;
-  align-content: center;
+  text-align: center;
 }
 
 .main {
