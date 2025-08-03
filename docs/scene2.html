@@ -13,7 +13,7 @@ const debug = true;
 async function init() {
 
 var margin = 100;
-var width = 500;
+var width = 900;
 var height = 400;
 
 const rawdata = await d3.csv('https://flunky.github.io/cars2017.csv');
@@ -30,7 +30,7 @@ function log( msg ) {
 // at the same time, gather data for making avgMPG per Make
 var mpgs_by_make = [];
 rawdata.forEach( function(d) {
-  if (d.Fuel == "Gasoline" && d.EngineCylinders == 3) {
+  if (d.Fuel == "Gasoline" && d.EngineCylinders == 4) {
     // gather data for making avgMPG per Make
     if ( ! (d.Make in mpgs_by_make) ) {
       mpgs_by_make[ d.Make ] = {
