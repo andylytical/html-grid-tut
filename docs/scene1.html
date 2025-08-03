@@ -1,8 +1,8 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <link rel="stylesheet" href="grid.css">
+<link rel="stylesheet" href="data.css">
 <meta charset="UTF-8">
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <script>
@@ -164,20 +164,36 @@ svg.selectAll('g').data(cyl_data).enter().append('g')
     .attr('height', d => height - margin - y(d.value))
     .attr('fill', d => color(d.key) )
 
-// make y axis
+// make Y-axis
 svg.append('g')
-  //.attr('transform', `translate(${margin},${margin})`)
   .attr('transform', `translate(${margin},0)`)
   .call(d3.axisLeft(y));
- //   .tickValues([10, 20, 50, 100]).tickFormat(d3.format('~s')));
 
-// make x axis
+// Label Y-axis
+svg.append('text')
+  .attr( 'transform', 'rotate(-90)' )
+  .attr( 'x', 0 - height/2 )
+  .attr( 'y', margin / 2 )
+  .attr( 'dy', '-0.3em' )
+  .style( 'text-anchor', 'middle' )
+  .text( 'Average MPG' )
+
+// make X-axis
 svg.append('g')
   .attr('transform', `translate(0,${height-margin})`)
-  .call(d3.axisBottom(fx));
-    //.tickValues([10, 20, 50, 100]).tickFormat(d3.format('~s')));
+  .call(d3.axisBottom(fx)
+    .tickFormat( (d,i) => cyl_data[i].qty )
+  );
 
+// Label X-axis
+svg.append('text')
+  .attr( 'x', width/2 )
+  .attr( 'y', height-(margin/2) )
+  .attr( 'dy', '1em' )
+  .style( 'text-anchor', 'middle' )
+  .text( 'Number of cylinders' )
 }
+
 </script>
 </head>
 <body onload='init()'>
@@ -191,11 +207,31 @@ svg.append('g')
 <svg></svg>
 </div> 
 
-<div class="right">Annotations</div>
+<div class="right">
+  <table>
+    <tr>
+      <th colspan=2>Legend</th>
+    </tr>
+    <tr>
+      <td>City MPG Average</td>
+      <td class="citympg"><pre>        </pre></td>
+    </tr>
+    <tr>
+      <td>Highway MPG Average</td>
+      <td class="highwaympg"><pre>        </pre></td>
+    </tr>
+  </table>
+</div>
 
-<div class="nav">&#x1F808; Back &nbsp; Forward &#x1F80A;</div>
+<div class="nav">
+  <p>
+    &#x1F808; Back
+    &nbsp;
+    <a href="scene2.html">Forward &#x1F80A;</a>
+  </p>
+</div>
+
 </div>
 
 </body>
 </html>
-
