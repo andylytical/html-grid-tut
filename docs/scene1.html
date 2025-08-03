@@ -19,7 +19,6 @@ var height = 400;
 const rawdata = await d3.csv('https://flunky.github.io/cars2017.csv');
 const subgroups = [ 'cityavg', 'highwayavg' ];
 
-
 function log( msg ) {
   if ( debug ) {
     console.log( msg );
@@ -27,40 +26,13 @@ function log( msg ) {
 }
 
 //log(rawdata);
-//log(rawdata.columns.slice(1));
 
 
 // filter out all but Gasoline engines with > 3 cylinders
-// at the same time, gather data for making avgMPG per Make
-var filtered = [];
-var mpgs_by_make = [];
+// at the same time, gather data for making avgMPG per cylinder_qty
 var mpg_by_cyl = [];
 rawdata.forEach( function(d) {
   if (d.Fuel == "Gasoline" && d.EngineCylinders > 3) {
-    // filter out all but Gasoline engines with > 3 cylinders
-    filtered.push( {
-        "Make": d.Make,
-        "EngineCylinders": d.EngineCylinders,
-        "AverageHighwayMPG": d.AverageHighwayMPG,
-        "AverageCityMPG": d.AverageCityMPG,
-      }
-    );
-
-    // gather data for making avgMPG per Make
-    if ( ! (d.Make in mpgs_by_make) ) {
-      mpgs_by_make[ d.Make ] = [];
-    }
-    if ( ! ( d.EngineCylinders in mpgs_by_make[d.Make] ) ) {
-      mpgs_by_make[ d.Make ][ d.EngineCylinders ] = [];
-    }
-    for ( let k of ["AverageHighwayMPG", "AverageCityMPG"]) {
-      if ( ! (k in mpgs_by_make[d.Make][d.EngineCylinders] ) ) {
-        mpgs_by_make[d.Make][d.EngineCylinders][k] = [];
-        //log( "adding empty "+k+" for "+d.Make+" with numCyls "+d.EngineCylinders )
-      }
-      mpgs_by_make[d.Make][d.EngineCylinders][k].push( d[k] );
-    }
-
     // collect data by cylinder
     if ( ! ( d.EngineCylinders in mpg_by_cyl ) ) {
       mpg_by_cyl[ d.EngineCylinders ] = {
@@ -72,12 +44,6 @@ rawdata.forEach( function(d) {
     mpg_by_cyl[ d.EngineCylinders ]["highway"].push( d.AverageHighwayMPG );
   }
 } );
-log(">>> START FILTERED");
-log(filtered);
-log("<<< END FILTERED");
-log(">>> START mpgs_by_make");
-log(mpgs_by_make);
-log(">>> END mpgs_by_make");
 log(">>> START mpg_by_cyl");
 log(mpg_by_cyl);
 log("<<< END mpg_by_cyl");
@@ -98,24 +64,6 @@ log(">>> START cylinder data");
 log(cyl_data);
 log("<<< END cylinder data");
 
-// Construct data with new AvgCityMPG and AvgHighwayMPG
-var data = [];
-for ( var make of Object.keys(mpgs_by_make) ) {
-  for ( var cyls of Object.keys(mpgs_by_make[make]) ) {
-    //log( "Make:"+make+" Cylinders:"+cyls );
-    let row = {
-      "Make": make,
-      "EngineCylinders": cyls,
-      "AverageHighwayMPG": d3.mean( mpgs_by_make[make][cyls]["AverageHighwayMPG"] ),
-      "AverageCityMPG": d3.mean( mpgs_by_make[make][cyls]["AverageCityMPG"] ),
-    };
-    //log( row );
-    data.push( row );
-  }
-}
-log(">>> START data");
-log(data);
-log(">>> END data");
 
 // make scales
 const fx = d3.scaleBand()
